@@ -68,9 +68,7 @@ public:
     }
     
     SimpleVector(SimpleVector&& other) {
-        data_ptr_ = std::exchange(other.data_ptr_, ArrayPtr<Type>());
-        size_ = std::exchange(other.size_, 0u);
-        capacity_ = std::exchange(other.capacity_, 0u);       
+        swap(std::move(other));
     }
     
     SimpleVector(const ReserveProxyObj& other)
@@ -87,7 +85,9 @@ public:
     }
     
     SimpleVector& operator=(SimpleVector<Type>&& rhs) {
-        swap(std::move(rhs));
+        if (this != &rhs) {
+            swap(std::move(rhs));
+        }    
         return *this;
     }    
     
