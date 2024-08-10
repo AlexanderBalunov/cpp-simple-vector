@@ -11,11 +11,7 @@ public:
     ArrayPtr() = default;
 
     explicit ArrayPtr(size_t size) {
-        if (size == 0) {
-            raw_ptr_ = nullptr;
-        } else {
-            raw_ptr_  = new Type[size];
-        }
+        raw_ptr_ = size == 0 ? nullptr : new Type[size];
     }
 
     explicit ArrayPtr(Type* raw_ptr) noexcept 
@@ -37,7 +33,9 @@ public:
     ArrayPtr& operator=(const ArrayPtr&) = delete;
 
     ArrayPtr& operator=(ArrayPtr&& rhs) noexcept {
-        raw_ptr_ = std::exchange(rhs.raw_ptr_, nullptr);
+        if (this != &rhs) {
+            raw_ptr_ = std::exchange(rhs.raw_ptr_, nullptr);
+        }
         return *this;
     }
 
@@ -64,7 +62,7 @@ public:
     }
 
     void swap(ArrayPtr& other) noexcept {
-        std::swap(other.raw_ptr_, raw_ptr_);
+        std::swap(raw_ptr_, other.raw_ptr_);
     }
     
     void swap(ArrayPtr&& other) noexcept {
