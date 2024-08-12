@@ -21,12 +21,25 @@ public:
     }
 
     ArrayPtr(const ArrayPtr& other) = delete;
+    
+    ArrayPtr(ArrayPtr&& other) noexcept 
+        : raw_ptr_(std::exchange(other.raw_ptr_, nullptr))
+    {
+    }    
 
     ~ArrayPtr() {
         delete[] raw_ptr_;
     }
 
     ArrayPtr& operator=(const ArrayPtr&) = delete;
+
+    ArrayPtr& operator=(ArrayPtr&& rhs) noexcept {
+        if (this != &rhs) {
+            delete[] raw_ptr_;
+            raw_ptr_ = std::exchange(rhs.raw_ptr_, nullptr);
+        }
+        return *this;
+    }
 
     [[nodiscard]] Type* Release() noexcept {
         Type* ex_array = raw_ptr_;
