@@ -75,7 +75,6 @@ public:
     
     SimpleVector(SimpleVector&& other) noexcept {
         swap(other);
-        other.Clear();
     }
     
     SimpleVector(const ReserveProxyObj& other)
@@ -94,7 +93,6 @@ public:
     SimpleVector& operator=(SimpleVector<Type>&& rhs) noexcept {
         if (this != &rhs) {
             swap(rhs);
-            rhs.Clear();
         }    
         return *this;
     }    
